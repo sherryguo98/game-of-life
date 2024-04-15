@@ -1,5 +1,3 @@
-// JavaScript: gameoflife.js
-
 // Define patterns for each letter
 const alphabetPatterns = {
   'A': [
@@ -16,49 +14,7 @@ const alphabetPatterns = {
     [1, 0, 0, 0, 1],
     [1, 1, 1, 1, 0]
   ],
-  'C': [
-    [0, 1, 1, 1, 0],
-    [1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0],
-    [1, 0, 0, 0, 1],
-    [0, 1, 1, 1, 0]
-  ],
-  'D': [
-    [1, 1, 1, 0, 0],
-    [1, 0, 0, 1, 0],
-    [1, 0, 0, 1, 0],
-    [1, 0, 0, 1, 0],
-    [1, 1, 1, 0, 0]
-  ],
-  'E': [
-    [1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0],
-    [1, 1, 1, 0, 0],
-    [1, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1]
-  ],
-  'F': [
-    [1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0],
-    [1, 1, 1, 0, 0],
-    [1, 0, 0, 0, 0],
-    [1, 0, 0, 0, 0]
-  ],
-  'G': [
-    [0, 1, 1, 1, 0],
-    [1, 0, 0, 0, 0],
-    [1, 0, 1, 1, 1],
-    [1, 0, 0, 0, 1],
-    [0, 1, 1, 1, 0]
-  ], 
-  'H': [
-    [1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 1],
-    [1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 1]
-  ],
-  // ... (Define the rest of the letters I to Y)
+  // Add definitions for C through Z and space
   ' ': [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -68,64 +24,42 @@ const alphabetPatterns = {
   ]
 };
 
-// Grid dimensions
 const gridContainer = document.getElementById('gameGrid');
 const rows = 5;
-const cols = 100; // This should be at least 6 times the number of characters you want to display
+const cols = 100;
 let gridData = createGridData(rows, cols);
 
-// Create the initial grid data array
 function createGridData(rows, cols) {
   return Array.from({ length: rows }, () => Array(cols).fill(false));
 }
 
-// Convert a string to a pattern on the grid
 function stringToPattern(str) {
-  // Clear the existing grid data
   gridData = createGridData(rows, cols);
-
-  // Translate each character to the grid
-  str.toUpperCase().split('').forEach((char, charIndex) => {
+  str.toUpperCase().split('').forEach((char, index) => {
     const pattern = alphabetPatterns[char] || alphabetPatterns[' '];
     pattern.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
-        const col = charIndex * 6 + cellIndex; // Assuming 6 columns per character including space
+        const col = index * 6 + cellIndex;
         if (rowIndex < rows && col < cols) {
-          gridData[rowIndex][col] = cell;
+          gridData[rowIndex][col] = cell === 1;
         }
       });
     });
   });
 }
 
-// Update the grid display based on grid data
 function updateGridDisplay() {
-  // Clear the grid container
   gridContainer.innerHTML = '';
-
-  // Create and append cells to the grid container
-  gridData.forEach(row => {
-    row.forEach(cellState => {
-      const cell = document.createElement('div');
-      cell.className = 'cell' + (cellState ? ' alive' : '');
-      gridContainer.appendChild(cell);
+  gridData.forEach((row, rowIndex) => {
+    row.forEach((cell, cellIndex) => {
+      const div = document.createElement('div');
+      div.className = 'cell' + (cell ? ' alive' : '');
+      gridContainer.appendChild(div);
     });
   });
 }
 
-// Attach event listeners and perform initial grid update
-document.addEventListener('DOMContentLoaded', () => {
-  // Get references to buttons and attach event listeners
-  document.getElementById('startButton').addEventListener('click', startGame);
-  document.getElementById('stopButton').addEventListener('click', stopGame);
-
-  attachCellEventListeners();
-  initializeGridWithString(); // Start with an empty grid
-});
-
-// Attach event listeners to grid cells (click to toggle life status)
 function attachCellEventListeners() {
-  // Use event delegation to handle cell clicks for current and future cells
   gridContainer.addEventListener('click', event => {
     if (event.target.classList.contains('cell')) {
       const index = Array.from(gridContainer.children).indexOf(event.target);
@@ -137,54 +71,44 @@ function attachCellEventListeners() {
   });
 }
 
-// Function to initialize the grid with user input text
-function initializeGridWithString() {
-  const text = document.getElementById('textInput').value;
-  stringToPattern(text);
-  updateGridDisplay();
-}
+document.addEventListener('DOMContentLoaded', () => {
+  attachCellEventListeners();
+  updateGridDisplay(); // Initialize with an empty grid
+});
 
-// Add your Game of Life logic here
+// Game of Life Logic
 function calculateNextGeneration() {
   const newGridData = createGridData(rows, cols);
-
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       const alive = gridData[y][x];
       const neighbors = countAliveNeighbors(y, x);
-      if (alive && (neighbors === 2 || neighbors === 3)) {
-        newGridData[y][x] = true;
-      } else if (!alive && neighbors === 3) {
-        newGridData[y][x] = true;
-      }
+      newGridData[y][x] = alive && (neighbors === 2 || neighbors === 3) || !alive && neighbors === 3;
     }
   }
-
   gridData = newGridData;
   updateGridDisplay();
 }
 
-function countAliveNeighbors(y, x) {
+function countAliveNeighbors(row, col) {
   let count = 0;
   for (let i = -1; i <= 1; i++) {
     for (let j = -1; j <= 1; j++) {
-      if (i === 0 && j === 0) continue; // Skip the current cell
-      const newY = y + i;
-      const newX = x + j;
-      if (newY >= 0 && newY < rows && newX >= 0 && newX < cols) {
-        count += gridData[newY][newX] ? 1 : 0;
+      if (i === 0 && j === 0) continue;
+      const x = col + j, y = row + i;
+      if (x >= 0 && x < cols && y >= 0 && y < rows) {
+        count += gridData[y][x] ? 1 : 0;
       }
     }
   }
   return count;
 }
 
-// Start and stop controls
 let simulationInterval = null;
 
 function startGame() {
   if (!simulationInterval) {
-    simulationInterval = setInterval(calculateNextGeneration, 100); // Adjust time as needed
+    simulationInterval = setInterval(calculateNextGeneration, 100);
   }
 }
 
@@ -195,12 +119,5 @@ function stopGame() {
   }
 }
 
-// Attach event listeners and perform initial grid update
-document.addEventListener('DOMContentLoaded', () => {
-  attachCellEventListeners();
-  initializeGridWithString(); // Start with an empty grid
-});
-
-// Attach event listeners to start and stop buttons
 document.getElementById('startButton').addEventListener('click', startGame);
 document.getElementById('stopButton').addEventListener('click', stopGame);
