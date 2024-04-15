@@ -52,11 +52,7 @@ function render() {
     cells.forEach((cell, idx) => {
         const i = Math.floor(idx / cols);
         const j = idx % cols;
-        if (gridData[i][j]) {
-            cell.classList.add('alive');
-        } else {
-            cell.classList.remove('alive');
-        }
+        cell.classList.toggle('alive', gridData[i][j]);
     });
 }
 
@@ -72,18 +68,17 @@ function stopGame() {
 }
 
 function initializeFromText() {
-    const text = document.getElementById('textInput').value;
-    const letters = text.toUpperCase().split('');
+    const text = document.getElementById('textInput').value.toUpperCase();
+    gridData = gridData.map(() => Array(cols).fill(false)); // Reset grid
+    const letters = text.split('');
     const patternLength = Math.ceil(cols / letters.length);
-    gridData = gridData.map(() => Array(cols).fill(false));
 
     letters.forEach((letter, index) => {
-        // Simple example: Convert 'A' to 1s, everything else to 0s
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < patternLength; j++) {
-                if (letter === 'A' && i % 2 === 0) { // A simple pattern for 'A'
-                    let pos = index * patternLength + j;
-                    if (pos < cols) gridData[i][pos] = true;
+                let pos = index * patternLength + j;
+                if (pos < cols && (i % 2 === 0) && (letter.charCodeAt(0) % 2 === 1)) { // simple even-odd pattern based on ASCII
+                    gridData[i][pos] = true;
                 }
             }
         }
