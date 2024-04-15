@@ -1,6 +1,6 @@
 const grid = document.getElementById('gameGrid');
-const rows = 20;
-const cols = 40;
+const rows = 40;
+const cols = 80;
 let intervalId;
 let gridData = Array(rows).fill().map(() => Array(cols).fill(false));
 
