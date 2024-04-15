@@ -1,3 +1,98 @@
+// JavaScript: gameoflife.js
+
+const gridContainer = document.getElementById('gameGrid');
+const rows = 5; // Based on the height of your letter patterns
+const cols = 100; // Assuming a max width for now, adjust as needed
+let intervalId = null;
+let gridData = createGridData(rows, cols);
+
+// Helper function to create grid data array
+function createGridData(rows, cols) {
+  return Array.from({ length: rows }, () => Array(cols).fill(false));
+}
+
+// Define patterns for each letter
+const alphabetPatterns = {
+  'A': [
+    [0, 1, 1, 1, 0],
+    [1, 0, 0, 0, 1],
+    [1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 1],
+    [1, 0, 0, 0, 1]
+  ],
+  // ... Define patterns for B through Y
+  'Z': [
+    [1, 1, 1, 1, 1],
+    [0, 0, 0, 1, 0],
+    [0, 0, 1, 0, 0],
+    [0, 1, 0, 0, 0],
+    [1, 1, 1, 1, 1]
+  ]
+};
+
+// Initialize the grid with a string
+function initializeGridWithString(text) {
+  resetGrid();
+  const pattern = stringToPattern(text);
+  applyPatternToGrid(pattern);
+  updateGridDisplay();
+}
+
+// Reset the grid data to all false (dead)
+function resetGrid() {
+  gridData.forEach(row => row.fill(false));
+}
+
+// Convert a string to a grid pattern
+function stringToPattern(str) {
+  return str.toUpperCase().split('').flatMap((char, index) => {
+    return alphabetPatterns[char] || [];
+  });
+}
+
+// Apply a pattern to the grid data
+function applyPatternToGrid(pattern) {
+  pattern.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (y < rows && x < cols) {
+        gridData[y][x] = cell === 1;
+      }
+    });
+  });
+}
+
+// Create the visual grid in the DOM
+function createGrid() {
+  gridContainer.innerHTML = '';
+  gridContainer.style.gridTemplateColumns = `repeat(${cols}, 10px)`;
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      let cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.onclick = () => toggleCell(i, j, cell);
+      gridContainer.appendChild(cell);
+    }
+  }
+}
+
+// Toggle cell state
+function toggleCell(row, col, cell) {
+  gridData[row][col] = !gridData[row][col];
+  cell.classList.toggle('alive');
+}
+
+// Update the grid display based on grid data
+function updateGridDisplay() {
+  gridContainer.childNodes.forEach((cell, index) => {
+    const row = Math.floor(index / cols);
+    const col = index % cols;
+    cell.classList.toggle('alive', gridData[row][col]);
+  });
+}
+
+// ... Add your Game of Life logic here
+
+createGrid();
 const grid = document.getElementById('gameGrid');
 const rows = 40;
 const cols = 80;
