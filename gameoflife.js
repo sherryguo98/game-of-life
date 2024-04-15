@@ -2,7 +2,7 @@
 
 // Define patterns for each letter
 const alphabetPatterns = {
-  A': [
+  'A': [
     [0, 1, 1, 1, 0],
     [1, 0, 0, 0, 1],
     [1, 1, 1, 1, 1],
