@@ -27,17 +27,24 @@
   .alive {
     background-color: #000;
   }
-  input, button {
-    margin: 20px;
+  .controls {
+    margin-top: 20px;
+    text-align: center;
+  }
+  button {
+    margin-right: 10px;
   }
 </style>
 </head>
 <body>
-  <div>
+  <div class="controls">
     <input type="text" id="textInput" placeholder="Enter text here"/>
     <button onclick="initializeGridWithString()">Start from Text</button>
-    <div id="gameGrid" class="grid-container"></div>
+    <button onclick="startGame()">Start Game</button>
+    <button onclick="stopGame()">Stop Game</button>
   </div>
+  <div id="gameGrid" class="grid-container"></div>
+  
   <script src="gameoflife.js"></script>
 </body>
 </html>
