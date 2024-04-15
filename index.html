@@ -4,20 +4,49 @@
 <meta charset="UTF-8">
 <title>Conway's Game of Life</title>
 <style>
-  body { font-family: Arial, sans-serif; text-align: center; }
-  .grid { display: inline-grid; border: 2px solid black; margin-top: 10px; }
-  .cell { width: 10px; height: 10px; background-color: white; border: 1px solid #ddd; }
-  .alive { background-color: black; }
-  input, button { margin-top: 10px; }
+  body { 
+    font-family: Arial, sans-serif; 
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  
+  #gameGrid {
+    display: grid;
+    grid-template-columns: repeat(40, 10px); /* Creates 40 columns */
+    gap: 1px; /* Adds a gap between cells */
+    margin: 20px 0; /* Space above and below the grid */
+  }
+  
+  .cell {
+    width: 10px; /* Width of each cell */
+    height: 10px; /* Height of each cell */
+    background-color: white;
+    border: 1px solid #ddd;
+  }
+  
+  .alive {
+    background-color: black; /* Color for alive cells */
+  }
+  
+  input, button {
+    margin-top: 10px;
+  }
 </style>
 </head>
 <body>
-  <h2>Conway's Game of Life</h2>
   <div id="gameGrid"></div>
-  <input type="text" id="textInput" placeholder="Enter text here">
+  <input type="text" id="textInput" placeholder="Enter text here" />
   <button onclick="initializeFromText()">Start from Text</button>
   <button onclick="startGame()">Start Game</button>
   <button onclick="stopGame()">Stop Game</button>
+
+  <!-- Include your JavaScript file here -->
   <script src="gameoflife.js"></script>
 </body>
 </html>
