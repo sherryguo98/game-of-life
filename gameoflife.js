@@ -182,7 +182,6 @@ const alphabetPatterns = {
     [0, 1, 0, 0, 0],
     [1, 1, 1, 1, 1]
   ]
-  // Add definitions for C through Z and space
   ' ': [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -207,7 +206,7 @@ function stringToPattern(str) {
     const pattern = alphabetPatterns[char] || alphabetPatterns[' '];
     pattern.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
-        const col = index * 6 + cellIndex;
+        const col = index * 6 + cellIndex; // Ensure it matches the space allocation
         if (rowIndex < rows && col < cols) {
           gridData[rowIndex][col] = cell === 1;
         }
@@ -241,10 +240,9 @@ function attachCellEventListeners() {
 
 document.addEventListener('DOMContentLoaded', () => {
   attachCellEventListeners();
-  updateGridDisplay(); // Initialize with an empty grid
+  updateGridDisplay(); // Optional: Initialize with a specific pattern or empty
 });
 
-// Game of Life Logic
 function calculateNextGeneration() {
   const newGridData = createGridData(rows, cols);
   for (let y = 0; y < rows; y++) {
