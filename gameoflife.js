@@ -115,11 +115,12 @@ function updateGridDisplay() {
 
 // Attach event listeners and perform initial grid update
 document.addEventListener('DOMContentLoaded', () => {
-  // Attach event listeners to the grid cells
-  attachCellEventListeners();
+  // Get references to buttons and attach event listeners
+  document.getElementById('startButton').addEventListener('click', startGame);
+  document.getElementById('stopButton').addEventListener('click', stopGame);
 
-  // Initialize an empty grid
-  updateGridDisplay();
+  attachCellEventListeners();
+  initializeGridWithString(); // Start with an empty grid
 });
 
 // Attach event listeners to grid cells (click to toggle life status)
