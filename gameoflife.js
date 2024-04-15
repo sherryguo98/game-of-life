@@ -192,7 +192,7 @@ const alphabetPatterns = {
 };
 
 const gridContainer = document.getElementById('gameGrid');
-const rows = 5;
+const rows = 50;
 const cols = 100;
 let gridData = createGridData(rows, cols);
 
