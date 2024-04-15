@@ -50,8 +50,7 @@ const alphabetPatterns = {
     [1, 0, 1, 1, 1],
     [1, 0, 0, 0, 1],
     [0, 1, 1, 1, 0]
-  ],  
-  // Define patterns for the rest of the alphabet B through Y
+  ],  // Fixed: Added a comma here
   'Z': [
     [1, 1, 1, 1, 1],
     [0, 0, 0, 1, 0],
@@ -59,7 +58,6 @@ const alphabetPatterns = {
     [0, 1, 0, 0, 0],
     [1, 1, 1, 1, 1]
   ],
-  // Space represents empty or non-alphabet character
   ' ': [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -92,7 +90,6 @@ function resetGridData() {
 // Function to convert a string to a pattern on the grid
 function stringToPattern(str) {
   resetGridData();
-
   for (let i = 0; i < str.length; i++) {
     const char = str[i].toUpperCase();
     if (alphabetPatterns[char]) {
@@ -100,7 +97,7 @@ function stringToPattern(str) {
         for (let x = 0; x < 5; x++) {
           const col = i * 6 + x; // 6 columns per character, including space
           if (col < cols) {
-            gridData[y][col] = alphabetPatterns[char][y][x];
+            gridData[y][col] = alphabetPatterns[char][y][x] === 1;
           }
         }
       }
@@ -110,12 +107,14 @@ function stringToPattern(str) {
 
 // Function to update the grid display
 function updateGridDisplay() {
-  const cells = gridContainer.querySelectorAll('.cell');
-  cells.forEach((cell, idx) => {
-    const row = Math.floor(idx / cols);
-    const col = idx % cols;
-    cell.classList.toggle('alive', !!gridData[row][col]);
-  });
+  gridContainer.innerHTML = '';  // Clear previous cells
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell' + (gridData[y][x] ? ' alive' : '');
+      gridContainer.appendChild(cell);
+    }
+  }
 }
 
 // Function to initialize the grid with user input text
@@ -124,28 +123,9 @@ function initializeGridWithString(text) {
   updateGridDisplay();
 }
 
-// Event listeners for the grid cells (click to toggle life status)
-function attachCellEventListeners() {
-  gridContainer.innerHTML = '';
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols; j++) {
-      let cell = document.createElement('div');
-      cell.className = 'cell';
-      cell.addEventListener('click', () => {
-        gridData[i][j] = !gridData[i][j];
-        cell.classList.toggle('alive');
-      });
-      gridContainer.appendChild(cell);
-    }
-  }
-}
-
-// Main function to create and display the initial grid
-function main() {
-  attachCellEventListeners();
-  initializeGridWithString('DAISY'); // Default word to display on the grid
-}
-
-main(); // Initialize the grid on page load
+// Initial setup
+document.addEventListener('DOMContentLoaded', function() {
+  initializeGridWithString('DAISY'); // Default text to display
+});
 
 // Add your Game of Life logic here (update function, start/stop controls, etc.)
