@@ -50,7 +50,7 @@ const alphabetPatterns = {
     [1, 0, 1, 1, 1],
     [1, 0, 0, 0, 1],
     [0, 1, 1, 1, 0]
-  ]  
+  ],  
   // Define patterns for the rest of the alphabet B through Y
   'Z': [
     [1, 1, 1, 1, 1],
