@@ -215,6 +215,30 @@ function stringToPattern(str) {
   });
 }
 
+const gridContainer = document.getElementById('gameGrid');
+const rows = 5;
+const cols = 100;
+let gridData = createGridData(rows, cols);
+
+function createGridData(rows, cols) {
+  return Array.from({ length: rows }, () => Array(cols).fill(false));
+}
+
+function stringToPattern(str) {
+  gridData = createGridData(rows, cols);
+  str.toUpperCase().split('').forEach((char, index) => {
+    const pattern = alphabetPatterns[char] || alphabetPatterns[' '];
+    pattern.forEach((row, rowIndex) => {
+      row.forEach((cell, cellIndex) => {
+        const col = index * 6 + cellIndex;
+        if (rowIndex < rows && col < cols) {
+          gridData[rowIndex][col] = cell === 1;
+        }
+      });
+    });
+  });
+}
+
 function updateGridDisplay() {
   gridContainer.innerHTML = '';
   gridData.forEach((row, rowIndex) => {
@@ -240,7 +264,7 @@ function attachCellEventListeners() {
 
 document.addEventListener('DOMContentLoaded', () => {
   attachCellEventListeners();
-  updateGridDisplay(); // Optional: Initialize with a specific pattern or empty
+  updateGridDisplay();
 });
 
 function calculateNextGeneration() {
