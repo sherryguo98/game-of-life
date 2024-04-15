@@ -192,7 +192,7 @@ const alphabetPatterns = {
 };
 
 const gridContainer = document.getElementById('gameGrid');
-const rows = 50;
+const rows = 60;
 const cols = 100;
 let gridData = createGridData(rows, cols);
 
@@ -206,7 +206,7 @@ function stringToPattern(str) {
     const pattern = alphabetPatterns[char] || alphabetPatterns[' '];
     pattern.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
-        const col = index * 6 + cellIndex;
+        const col = index * 6 + cellIndex; // Ensure it matches the space allocation
         if (rowIndex < rows && col < cols) {
           gridData[rowIndex][col] = cell === 1;
         }
@@ -240,10 +240,9 @@ function attachCellEventListeners() {
 
 document.addEventListener('DOMContentLoaded', () => {
   attachCellEventListeners();
-  updateGridDisplay(); // Initialize with an empty grid
+  updateGridDisplay(); // Optional: Initialize with a specific pattern or empty
 });
 
-// Game of Life Logic
 function calculateNextGeneration() {
   const newGridData = createGridData(rows, cols);
   for (let y = 0; y < rows; y++) {
