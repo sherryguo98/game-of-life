@@ -143,135 +143,63 @@ function initializeGridWithString() {
   updateGridDisplay();
 }
 
-// Add your Game of Life logic here (update function, start/stop controls, etc.)
-// JavaScript: gameoflife.js
+// Add your Game of Life logic here
+function calculateNextGeneration() {
+  const newGridData = createGridData(rows, cols);
 
-// Define patterns for each letter
-const alphabetPatterns = {
-  'A': [
-    [0, 1, 1, 1, 0],
-    [1, 0, 0, 0, 1],
-    [1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 1]
-  ],
-  'B': [
-    [1, 1, 1, 1, 0],
-    [1, 0, 0, 0, 1],
-    [1, 1, 1, 1, 0],
-    [1, 0, 0, 0, 1],
-    [1, 1, 1, 1, 0]
-  ],
-  'C': [
-    [0, 1, 1, 1, 0],
-    [1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0],
-    [1, 0, 0, 0, 1],
-    [0, 1, 1, 1, 0]
-  ],
-  'D': [
-    [1, 1, 1, 0, 0],
-    [1, 0, 0, 1, 0],
-    [1, 0, 0, 1, 0],
-    [1, 0, 0, 1, 0],
-    [1, 1, 1, 0, 0]
-  ],
-  'E': [
-    [1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0],
-    [1, 1, 1, 0, 0],
-    [1, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1]
-  ],
-  'F': [
-    [1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0],
-    [1, 1, 1, 0, 0],
-    [1, 0, 0, 0, 0],
-    [1, 0, 0, 0, 0]
-  ],
-  'G': [
-    [0, 1, 1, 1, 0],
-    [1, 0, 0, 0, 0],
-    [1, 0, 1, 1, 1],
-    [1, 0, 0, 0, 1],
-    [0, 1, 1, 1, 0]
-  ],  // Fixed: Added a comma here
-  'Z': [
-    [1, 1, 1, 1, 1],
-    [0, 0, 0, 1, 0],
-    [0, 0, 1, 0, 0],
-    [0, 1, 0, 0, 0],
-    [1, 1, 1, 1, 1]
-  ],
-  ' ': [
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0]
-  ]
-};
-
-// Grid dimensions
-const gridContainer = document.getElementById('gameGrid');
-const rows = 5;
-const cols = 100;
-let gridData = createGridData(rows, cols);
-
-// Helper function to create an empty grid
-function createGridData(rows, cols) {
-  return Array.from({ length: rows }, () => Array(cols).fill(false));
-}
-
-// Resets the grid data to all dead cells
-function resetGridData() {
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      gridData[row][col] = false;
-    }
-  }
-}
-
-// Function to convert a string to a pattern on the grid
-function stringToPattern(str) {
-  resetGridData();
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i].toUpperCase();
-    if (alphabetPatterns[char]) {
-      for (let y = 0; y < 5; y++) {
-        for (let x = 0; x < 5; x++) {
-          const col = i * 6 + x; // 6 columns per character, including space
-          if (col < cols) {
-            gridData[y][col] = alphabetPatterns[char][y][x] === 1;
-          }
-        }
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const alive = gridData[y][x];
+      const neighbors = countAliveNeighbors(y, x);
+      if (alive && (neighbors === 2 || neighbors === 3)) {
+        newGridData[y][x] = true;
+      } else if (!alive && neighbors === 3) {
+        newGridData[y][x] = true;
       }
     }
   }
-}
 
-// Function to update the grid display
-function updateGridDisplay() {
-  gridContainer.innerHTML = '';  // Clear previous cells
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < cols; x++) {
-      const cell = document.createElement('div');
-      cell.className = 'cell' + (gridData[y][x] ? ' alive' : '');
-      gridContainer.appendChild(cell);
-    }
-  }
-}
-
-// Function to initialize the grid with user input text
-function initializeGridWithString(text) {
-  stringToPattern(text);
+  gridData = newGridData;
   updateGridDisplay();
 }
 
-// Initial setup
-document.addEventListener('DOMContentLoaded', function() {
-  initializeGridWithString('DAISY'); // Default text to display
+function countAliveNeighbors(y, x) {
+  let count = 0;
+  for (let i = -1; i <= 1; i++) {
+    for (let j = -1; j <= 1; j++) {
+      if (i === 0 && j === 0) continue; // Skip the current cell
+      const newY = y + i;
+      const newX = x + j;
+      if (newY >= 0 && newY < rows && newX >= 0 && newX < cols) {
+        count += gridData[newY][newX] ? 1 : 0;
+      }
+    }
+  }
+  return count;
+}
+
+// Start and stop controls
+let simulationInterval = null;
+
+function startGame() {
+  if (!simulationInterval) {
+    simulationInterval = setInterval(calculateNextGeneration, 100); // Adjust time as needed
+  }
+}
+
+function stopGame() {
+  if (simulationInterval) {
+    clearInterval(simulationInterval);
+    simulationInterval = null;
+  }
+}
+
+// Attach event listeners and perform initial grid update
+document.addEventListener('DOMContentLoaded', () => {
+  attachCellEventListeners();
+  initializeGridWithString(); // Start with an empty grid
 });
 
-// Add your Game of Life logic here (update function, start/stop controls, etc.)
+// Attach event listeners to start and stop buttons
+document.getElementById('startButton').addEventListener('click', startGame);
+document.getElementById('stopButton').addEventListener('click', stopGame);
