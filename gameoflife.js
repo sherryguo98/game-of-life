@@ -193,7 +193,7 @@ const alphabetPatterns = {
 
 // Grid dimensions
 const gridContainer = document.getElementById('gameGrid');
-const rows = 5;
+const rows = 50;
 const cols = 100; // This should be at least 6 times the number of characters you want to display
 let gridData = createGridData(rows, cols);
 
