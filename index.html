@@ -15,8 +15,9 @@
   }
   .grid-container {
     display: grid;
-    grid-template-columns: repeat(100, 10px);
+    grid-template-columns: repeat(100, 10px); /* Adjust based on the number of columns you need */
     gap: 1px;
+    margin-top: 20px;
   }
   .cell {
     width: 10px;
@@ -34,9 +35,8 @@
 </head>
 <body>
   <div>
-    <input type="text" id="textInput" placeholder="Enter text here" value="DAISY"/>
+    <input type="text" id="textInput" placeholder="Enter text here"/>
     <button onclick="initializeGridWithString(document.getElementById('textInput').value)">Start from Text</button>
-    <!-- ... rest of your buttons and input fields ... -->
     <div id="gameGrid" class="grid-container"></div>
   </div>
   <script src="gameoflife.js"></script>
